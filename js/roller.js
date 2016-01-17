@@ -40,7 +40,8 @@ var DiceRoller = {
     dice: '#dice',
     pool: '#pool',
     result: '#result',
-    rollbutton: '#rollbutton'
+    rollbutton: '#rollbutton',
+    clearbutton: '#clearbutton'
   },
 
   init: function() {
@@ -48,10 +49,22 @@ var DiceRoller = {
     this.setupUI();
   },
 
-  rollDicePool: function(pool) {
+  clearDicePool: function() {
+    var resultElement = document.querySelector(this.Selectors.result);
+    resultElement.innerHTML = '';
+    console.log('before', this.pool.length);
+    this.pool = [];
+    console.log('after', this.pool.length);
+    var poolElement = document.querySelector(this.Selectors.pool);
+    while(poolElement.firstChild) {
+      poolElement.removeChild(poolElement.firstChild);
+    }
+  },
+
+  rollDicePool: function() {
     var resultElement = document.querySelector(this.Selectors.result);
     var result = [];
-    pool.forEach((die) => {
+    this.pool.forEach((die) => {
       result.push(this.rollDie(die));
     });
     resultElement.innerHTML = JSON.stringify(result);
@@ -66,7 +79,9 @@ var DiceRoller = {
 
   setupUI: function() {
     var button = document.querySelector(this.Selectors.rollbutton);
-    button.onclick = this.rollDicePool.bind(this, this.pool);
+    button.onclick = this.rollDicePool.bind(this);
+    button = document.querySelector(this.Selectors.clearbutton);
+    button.onclick = this.clearDicePool.bind(this);
   },
 
   setupDice: function() {
