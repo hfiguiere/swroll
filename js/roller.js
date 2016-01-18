@@ -34,6 +34,27 @@ var DiceRoller = {
     force: FORCE_DIE
   },
 
+  dice_img: {
+    boost:       'img/dice-boost.svg',
+    setback:     'img/dice-setback.svg',
+    ability:     'img/dice-ability.svg',
+    difficulty:  'img/dice-difficulty.svg',
+    proficiency: 'img/dice-proficiency.svg',
+    challenge:   'img/dice-challenge.svg',
+    force:       'img/dice-force.svg'
+  },
+
+  result_img: {
+    s: 'img/result-s.svg',
+    a: 'img/result-a.svg',
+    T: 'img/result-T.svg',
+    f: 'img/result-f.svg',
+    t: 'img/result-t.svg',
+    D: 'img/result-D.svg',
+    l: 'img/result-l.svg',
+    k: 'img/result-k.svg',
+  },
+
   pool: [],
 
   Selectors: {
@@ -42,6 +63,28 @@ var DiceRoller = {
     result: '#result',
     rollbutton: '#rollbutton',
     clearbutton: '#clearbutton'
+  },
+
+  // output an image for the die symbol
+  _addPrettyResult: function(node, symbol) {
+    var src = this.result_img[symbol];
+    if (src) {
+      var img = document.createElement('img');
+      img.src = src;
+      img.height = 20;
+      node.appendChild(img);
+    }
+  },
+
+  // output an image for the die.
+  _addPrettyDie: function(node, die) {
+    var src = this.dice_img[die];
+    if (src) {
+      var img = document.createElement('img');
+      img.src = src;
+      img.height = 30;
+      node.appendChild(img);
+    }
   },
 
   init: function() {
@@ -61,13 +104,30 @@ var DiceRoller = {
     }
   },
 
+  prettyResult: function(element, result) {
+    // clear result
+    while(element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+    var first = true;
+    result.forEach((e) => {
+      if(!first) {
+        element.appendChild(document.createTextNode('/'));
+      }
+      for(var i = 0; i < e.length; i++) {
+        this._addPrettyResult(element, e.charAt(i));
+      }
+      first = false;
+    });
+  },
+
   rollDicePool: function() {
     var resultElement = document.querySelector(this.Selectors.result);
     var result = [];
     this.pool.forEach((die) => {
       result.push(this.rollDie(die));
     });
-    resultElement.innerHTML = JSON.stringify(result);
+    this.prettyResult(resultElement, result);
   },
 
   rollDie: function(dieName) {
@@ -92,6 +152,9 @@ var DiceRoller = {
       newElement = document.createElement('div');
       newElement.dataset.die = k;
       newElement.id = 'die-' + k;
+
+      this._addPrettyDie(newElement, k);
+
       var p = document.createElement('span');
       newElement.appendChild(p);
       p.appendChild(document.createTextNode(k));
@@ -122,6 +185,9 @@ var DiceRoller = {
 
     var div = document.createElement('div');
     div.dataset.die = die;
+
+    this._addPrettyDie(div, die);
+
     var p = document.createElement('span');
     div.appendChild(p);
     p.appendChild(document.createTextNode(die));
