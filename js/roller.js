@@ -10,14 +10,15 @@
 //  D: despair
 //  l: light side F
 //  k: dark side F
+//  <SPACE>: nothing
 
-var BOOST_DIE = [ '', '', 's', 'sa', 'aa', 'a' ];
-var SETBACK_DIE = [ '', '', 'f', 'f', 't', 't' ];
-var ABILITY_DIE = [ '', 's', 's', 'ss', 'a', 'a', 'sa', 'aa' ];
-var DIFFICULTY_DIE = [ '', 'f', 'ff', 't', 't', 't', 'tt', 'ft' ];
-var PROFICIENCY_DIE = [ '', 's', 's', 'ss', 'ss', 'a', 'sa', 'sa',
+var BOOST_DIE = [ ' ', ' ', 's', 'sa', 'aa', 'a' ];
+var SETBACK_DIE = [ ' ', ' ', 'f', 'f', 't', 't' ];
+var ABILITY_DIE = [ ' ', 's', 's', 'ss', 'a', 'a', 'sa', 'aa' ];
+var DIFFICULTY_DIE = [ ' ', 'f', 'ff', 't', 't', 't', 'tt', 'ft' ];
+var PROFICIENCY_DIE = [ ' ', 's', 's', 'ss', 'ss', 'a', 'sa', 'sa',
                         'sa', 'aa', 'aa', 'T' ];
-var CHALLENGE_DIE = [ '', 'f', 'f', 'ff', 'ff', 't', 't', 'ft',
+var CHALLENGE_DIE = [ ' ', 'f', 'f', 'ff', 'ff', 't', 't', 'ft',
                       'ft', 'tt', 'tt', 'D' ];
 var FORCE_DIE = [ 'l', 'l', 'l', 'l', 'l', 'l', 'll', 'k',
                   'k', 'kk', 'kk', 'kk' ];
@@ -74,6 +75,12 @@ var DiceRoller = {
 
   // output an image for the die symbol
   _addPrettyResult: function(node, symbol) {
+    if (symbol == ' ') {
+      var p = document.createElement('span');
+      p.textContent = '[]';
+      node.appendChild(p);
+      return;
+    }
     var src = this.result_img[symbol];
     if (src) {
       var img = document.createElement('img');
@@ -89,6 +96,7 @@ var DiceRoller = {
     if (src) {
       var img = document.createElement('img');
       img.src = src;
+      img.className = 'die-img';
       img.height = 30;
       node.appendChild(img);
     }
@@ -159,6 +167,7 @@ var DiceRoller = {
 
     this.dice_order.forEach((k) => {
       newElement = document.createElement('div');
+      newElement.className = 'die';
       newElement.dataset.die = k;
       newElement.id = 'die-' + k;
 
@@ -218,6 +227,7 @@ var DiceRoller = {
       this._setPooledDieCount(div);
     } else {
       div = document.createElement('div');
+      div.className = 'die';
       div.dataset.die = die;
       div.dataset.count = this.pool[die];
       var p = document.createElement('span');
