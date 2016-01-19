@@ -33,34 +33,41 @@ var DiceRoller = {
   ],
 
   dice: {
-    boost: BOOST_DIE,
-    setback: SETBACK_DIE,
-    ability: ABILITY_DIE,
-    difficulty: DIFFICULTY_DIE,
-    proficiency: PROFICIENCY_DIE,
-    challenge: CHALLENGE_DIE,
-    force: FORCE_DIE
-  },
-
-  dice_img: {
-    boost:       'img/dice-boost.svg',
-    setback:     'img/dice-setback.svg',
-    ability:     'img/dice-ability.svg',
-    difficulty:  'img/dice-difficulty.svg',
-    proficiency: 'img/dice-proficiency.svg',
-    challenge:   'img/dice-challenge.svg',
-    force:       'img/dice-force.svg'
-  },
-
-  // XXX localize
-  dice_labels: {
-    boost:       'Boost',
-    setback:     'Setback',
-    ability:     'Ability',
-    difficulty:  'Difficulty',
-    proficiency: 'Proficiency',
-    challenge:   'Challenge',
-    force:       'Force'
+    boost: {
+      dice: BOOST_DIE,
+      img: 'img/dice-boost.svg',
+      label: 'Boost',
+    },
+    setback: {
+      dice: SETBACK_DIE,
+      img: 'img/dice-setback.svg',
+      label: 'Setback',
+    },
+    ability: {
+      dice: ABILITY_DIE,
+      img: 'img/dice-ability.svg',
+      label: 'Ability',
+    },
+    difficulty: {
+      dice: DIFFICULTY_DIE,
+      img: 'img/dice-difficulty.svg',
+      label: 'Difficulty',
+    },
+    proficiency: {
+      dice: PROFICIENCY_DIE,
+      img: 'img/dice-proficiency.svg',
+      label: 'Proficiency',
+    },
+    challenge: {
+      dice: CHALLENGE_DIE,
+      img: 'img/dice-challenge.svg',
+      label: 'Challenge',
+    },
+    force: {
+      dice: FORCE_DIE,
+      img: 'img/dice-force.svg',
+      label: 'Force',
+    }
   },
 
   result_img: {
@@ -117,12 +124,12 @@ var DiceRoller = {
 
   // output an image for the die.
   _addPrettyDie: function(node, die) {
-    var src = this.dice_img[die];
+    var src = this.dice[die].img;
     if (src) {
       var img = document.createElement('img');
       img.src = src;
       img.className = 'die-img';
-      img.alt = this.dice_labels[die];
+      img.alt = this.dice[die].label;
       img.height = 30;
       node.appendChild(img);
     }
@@ -176,7 +183,7 @@ var DiceRoller = {
   },
 
   rollDie: function(dieName) {
-    var die = this.dice[dieName];
+    var die = this.dice[dieName].dice;
     // XXX shall we use window.crypto.getRandomValues() ?
     var idx = Math.floor(Math.random() * die.length);
     return die[idx];
@@ -204,7 +211,7 @@ var DiceRoller = {
 
       var p = document.createElement('span');
       newElement.appendChild(p);
-      p.textContent = this.dice_labels[k];
+      p.textContent = this.dice[k].label;
       var b = document.createElement('button');
       b.onclick = this.addToPool.bind(this, k)
       b.appendChild(document.createTextNode('+'));
@@ -267,7 +274,7 @@ var DiceRoller = {
 
       p = document.createElement('span');
       div.appendChild(p);
-      p.textContent = this.dice_labels[die];
+      p.textContent = this.dice[die].label;
       var b = document.createElement('button');
       b.onclick = this.removeFromPool.bind(this, div)
       b.textContent = '-';
