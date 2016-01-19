@@ -52,6 +52,17 @@ var DiceRoller = {
     force:       'img/dice-force.svg'
   },
 
+  // XXX localize
+  dice_labels: {
+    boost:       'Boost',
+    setback:     'Setback',
+    ability:     'Ability',
+    difficulty:  'Difficulty',
+    proficiency: 'Proficiency',
+    challenge:   'Challenge',
+    force:       'Force'
+  },
+
   result_img: {
     s: 'img/result-s.svg',
     a: 'img/result-a.svg',
@@ -61,6 +72,18 @@ var DiceRoller = {
     D: 'img/result-D.svg',
     l: 'img/result-l.svg',
     k: 'img/result-k.svg',
+  },
+
+  // XXX localize
+  result_labels: {
+    s: 'Success',
+    a: 'Advantage',
+    T: 'Triumph',
+    f: 'Failure',
+    t: 'Threat',
+    D: 'Despair',
+    l: 'Light Side',
+    k: 'Dark Side',
   },
 
   pool: {},
@@ -85,7 +108,9 @@ var DiceRoller = {
     if (src) {
       var img = document.createElement('img');
       img.src = src;
+      img.className = 'result-img';
       img.height = 20;
+      img.alt = this.result_labels[symbol];
       node.appendChild(img);
     }
   },
@@ -97,6 +122,7 @@ var DiceRoller = {
       var img = document.createElement('img');
       img.src = src;
       img.className = 'die-img';
+      img.alt = this.dice_labels[die];
       img.height = 30;
       node.appendChild(img);
     }
@@ -125,7 +151,10 @@ var DiceRoller = {
     var first = true;
     result.forEach((e) => {
       if(!first) {
-        element.appendChild(document.createTextNode('/'));
+        var span = document.createElement('span');
+        span.textContent = '/';
+        span.className = 'separator';
+        element.appendChild(span);
       }
       for(var i = 0; i < e.length; i++) {
         this._addPrettyResult(element, e.charAt(i));
@@ -175,7 +204,7 @@ var DiceRoller = {
 
       var p = document.createElement('span');
       newElement.appendChild(p);
-      p.appendChild(document.createTextNode(k));
+      p.textContent = this.dice_labels[k];
       var b = document.createElement('button');
       b.onclick = this.addToPool.bind(this, k)
       b.appendChild(document.createTextNode('+'));
@@ -238,10 +267,10 @@ var DiceRoller = {
 
       p = document.createElement('span');
       div.appendChild(p);
-      p.appendChild(document.createTextNode(die));
+      p.textContent = this.dice_labels[die];
       var b = document.createElement('button');
       b.onclick = this.removeFromPool.bind(this, div)
-      b.appendChild(document.createTextNode('-'));
+      b.textContent = '-';
       div.appendChild(b);
 
       element.appendChild(div);

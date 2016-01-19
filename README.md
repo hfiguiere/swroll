@@ -9,10 +9,11 @@ I wrote this because I bought the tabletop RPG but the store(s) are out of
 the custom dice needed to play the game.
 
 At no point I assert anything on the game mechanics involved. My sole
-intention is to help players enjoy the game.
+intention is to help players enjoy the game. The dice symbols have
+been redrawn, inspired from the original one, but different.
 
-Also any trademark usage is intended to be fair and really designate
-the trademarked item.
+Also any trademark usage is intended to be fair use and really to
+designate the trademarked item.
 
 Tested on Firefox Nightly.
 

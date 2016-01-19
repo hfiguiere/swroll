@@ -18,3 +18,23 @@ body {
 .die > button {
     
 }
+
+.result {
+    margin-left: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.result > .separator {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.result-img {
+    width: 25px;
+    vertical-align: middle;
+}
+
+.footer {
+    text-align: center;
+}
