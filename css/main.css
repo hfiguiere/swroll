@@ -2,6 +2,10 @@ body {
     font-family: 'sans serif';
 }
 
+.center {
+    text-align: center;
+}
+
 .die {
     flex-direction: row;
     margin-left: 1em;
@@ -16,7 +20,11 @@ body {
 }
 
 .die > button {
-    
+    margin-left: 1em;
+}
+
+.diecount {
+    font-weight: bold;
 }
 
 .result {

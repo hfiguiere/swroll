@@ -210,6 +210,7 @@ var DiceRoller = {
       newElement.id = 'die-' + k;
 
       var p = document.createElement('span');
+      p.className = "diecount";
       newElement.appendChild(p);
 
       this._addPrettyDie(newElement, k);
