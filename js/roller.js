@@ -96,7 +96,6 @@ var DiceRoller = {
   pool: {},
 
   Selectors: {
-    dice: '#dice',
     pool: '#pool',
     result: '#result',
     rollbutton: '#rollbutton',
@@ -145,8 +144,10 @@ var DiceRoller = {
     resultElement.innerHTML = '';
     this.pool = {};
     var poolElement = document.querySelector(this.Selectors.pool);
-    while(poolElement.firstChild) {
-      poolElement.removeChild(poolElement.firstChild);
+    var children = poolElement.childNodes;
+    for (var i = 0; i < children.length; i++) {
+      children[i].dataset.count = 0;
+      this._setPooledDieCount(children[i]);
     }
   },
 
@@ -198,53 +199,66 @@ var DiceRoller = {
   },
 
   setupDice: function() {
-    var element = document.querySelector(this.Selectors.dice);
+    var element = document.querySelector(this.Selectors.pool);
     var newElement;
 
     this.dice_order.forEach((k) => {
       newElement = document.createElement('div');
       newElement.className = 'die';
       newElement.dataset.die = k;
+      newElement.dataset.count = 0;
       newElement.id = 'die-' + k;
+
+      var p = document.createElement('span');
+      newElement.appendChild(p);
 
       this._addPrettyDie(newElement, k);
 
       var p = document.createElement('span');
       newElement.appendChild(p);
       p.textContent = this.dice[k].label;
+
       var b = document.createElement('button');
+      b.className = 'plus-button';
       b.onclick = this.addToPool.bind(this, k)
-      b.appendChild(document.createTextNode('+'));
+      b.textContent = '+';
+      newElement.appendChild(b);
+
+      b = document.createElement('button');
+      b.className = 'minus-button';
+      b.onclick = this.removeFromPool.bind(this, k)
+      b.textContent = '-';
       newElement.appendChild(b);
 
       element.appendChild(newElement);
+      // we must ensure newElement is in the DOM before calling this
+      this._setPooledDieCount(newElement);
     });
   },
 
   addToPool: function(die) {
-    if (this.pool[die] === undefined || Number.isNaN(this.pool[die])) {
-      this.pool[die] = 1;
-    } else {
+    if (this.pool[die] > 0) {//  === undefined || Number.isNaN(this.pool[die])) {
       this.pool[die]++;
+    } else {
+      this.pool[die] = 1;
     }
-    this._addToPoolUI(die);
+    var div = document.querySelector(this.Selectors.pool +
+                                     ' > div[data-die=' + die);
+    if (div) {
+      div.dataset.count = this.pool[die];
+      this._setPooledDieCount(div);
+    }
   },
 
-  removeFromPool: function(div) {
-    var die = div.dataset.die;
+  removeFromPool: function(die) {
     if (die) {
-      if (div.dataset.count <= 1) {
-        var parent = div.parentNode;
-        parent.removeChild(div);
-      } else {
-        div.dataset.count--;
-        this._setPooledDieCount(div);
-      }
       if (this.pool[die] > 0) {
         this.pool[die]--;
-      } else {
-        console.error('this.pool inconsistent for ', die, this.pool[die]);
       }
+      var div = document.querySelector(this.Selectors.pool +
+                                       ' > div[data-die=' + die);
+      div.dataset.count = this.pool[die];
+      this._setPooledDieCount(div);
     } else {
       console.error('inconsistent data: unkown die');
     }
@@ -252,37 +266,10 @@ var DiceRoller = {
 
   _setPooledDieCount: function(node) {
     node.firstChild.textContent = node.dataset.count + 'x';
+    var b = node.querySelector('.minus-button');
+    b.disabled = (node.dataset.count == 0);
   },
 
-  _addToPoolUI: function(die) {
-    var element = document.querySelector(this.Selectors.pool);
-
-    var div = element.querySelector('div[data-die=' + die);
-    if (div) {
-      div.dataset.count++;
-      this._setPooledDieCount(div);
-    } else {
-      div = document.createElement('div');
-      div.className = 'die';
-      div.dataset.die = die;
-      div.dataset.count = this.pool[die];
-      var p = document.createElement('span');
-      div.appendChild(p);
-      this._setPooledDieCount(div);
-
-      this._addPrettyDie(div, die);
-
-      p = document.createElement('span');
-      div.appendChild(p);
-      p.textContent = this.dice[die].label;
-      var b = document.createElement('button');
-      b.onclick = this.removeFromPool.bind(this, div)
-      b.textContent = '-';
-      div.appendChild(b);
-
-      element.appendChild(div);
-    }
-  },
 };
 
 DiceRoller.init();
