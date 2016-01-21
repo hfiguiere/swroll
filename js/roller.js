@@ -218,16 +218,21 @@ var DiceRoller = {
       newElement.appendChild(p);
       p.textContent = this.dice[k].label;
 
-      var b = document.createElement('button');
-      b.className = 'plus-button';
+      var b = document.createElement('img');
+      b.className = 'plus-button btn';
       b.onclick = this.addToPool.bind(this, k)
-      b.textContent = '+';
+      b.alt = '+';
+      b.src = 'img/add-btn.svg';
+      b.role = 'button';
+      b.height = 20;
       newElement.appendChild(b);
 
-      b = document.createElement('button');
-      b.className = 'minus-button';
+      b = document.createElement('img');
+      b.className = 'minus-button btn';
       b.onclick = this.removeFromPool.bind(this, k)
-      b.textContent = '-';
+      b.alt = '-';
+      b.role = 'button';
+      b.height = 20;
       newElement.appendChild(b);
 
       element.appendChild(newElement);
@@ -254,6 +259,8 @@ var DiceRoller = {
     if (die) {
       if (this.pool[die] > 0) {
         this.pool[die]--;
+      } else {
+        this.pool[die] = 0;
       }
       var div = document.querySelector(this.Selectors.pool +
                                        ' > div[data-die=' + die);
@@ -267,7 +274,11 @@ var DiceRoller = {
   _setPooledDieCount: function(node) {
     node.firstChild.textContent = node.dataset.count + 'x';
     var b = node.querySelector('.minus-button');
-    b.disabled = (node.dataset.count == 0);
+    if (node.dataset.count > 0) {
+      b.src = 'img/rm-btn.svg';
+    } else {
+      b.src = 'img/rm-btn-disabled.svg';
+    }
   },
 
 };
