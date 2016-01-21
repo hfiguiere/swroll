@@ -105,9 +105,7 @@ var DiceRoller = {
   // output an image for the die symbol
   _addPrettyResult: function(node, symbol) {
     if (symbol == ' ') {
-      var p = document.createElement('span');
-      p.textContent = '[]';
-      node.appendChild(p);
+      // empty result
       return;
     }
     var src = this.result_img[symbol];
@@ -164,8 +162,9 @@ var DiceRoller = {
         span.className = 'separator';
         element.appendChild(span);
       }
-      for(var i = 0; i < e.length; i++) {
-        this._addPrettyResult(element, e.charAt(i));
+      this._addPrettyDie(element, e.die);
+      for(var i = 0; i < e.roll.length; i++) {
+        this._addPrettyResult(element, e.roll.charAt(i));
       }
       first = false;
     });
@@ -177,7 +176,7 @@ var DiceRoller = {
     Object.keys(this.pool).forEach((die) => {
       var count = this.pool[die];
       for(var i = 0; i < count; i++) {
-        result.push(this.rollDie(die));
+        result.push({ die: die, roll: this.rollDie(die) });
       }
     });
     this.prettyResult(resultElement, result);
