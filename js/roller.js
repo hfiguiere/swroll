@@ -1,6 +1,5 @@
 
 
-
 // Results
 //  s: success
 //  a: advantage
@@ -98,6 +97,7 @@ var DiceRoller = {
   Selectors: {
     pool: '#pool',
     result: '#result',
+    outcome: '#outcome',
     rollbutton: '#rollbutton',
     clearbutton: '#clearbutton'
   },
@@ -140,6 +140,9 @@ var DiceRoller = {
   clearDicePool: function() {
     var resultElement = document.querySelector(this.Selectors.result);
     resultElement.innerHTML = '';
+    resultElement = document.querySelector(this.Selectors.outcome);
+    resultElement.innerHTML = '';
+
     this.pool = {};
     var poolElement = document.querySelector(this.Selectors.pool);
     var children = poolElement.childNodes;
@@ -170,6 +173,20 @@ var DiceRoller = {
     });
   },
 
+  prettyOutcome: function(element, outcome) {
+    while(element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+    ['s', 'a', 'T', 'f', 't', 'D', 'l', 'k'].forEach((symbol) => {
+      var val = outcome[symbol];
+      if (val) {
+        for (var i = 0; i < val; i++) {
+          this._addPrettyResult(element, symbol);
+        }
+      }
+    });
+  },
+
   rollDicePool: function() {
     var resultElement = document.querySelector(this.Selectors.result);
     var result = [];
@@ -180,6 +197,41 @@ var DiceRoller = {
       }
     });
     this.prettyResult(resultElement, result);
+
+    resultElement = document.querySelector(this.Selectors.outcome);
+    var outcome = {
+      s: 0,
+      a: 0,
+      T: 0,
+      f: 0,
+      t: 0,
+      D: 0,
+      l: 0,
+      k: 0
+    };
+    // dice outcome.
+    result.forEach((e) => {
+      if (!e.roll) {
+        return;
+      }
+      for(var i = 0; i < e.roll.length; i++) {
+        var r = e.roll.charAt(i);
+        if (r && r != ' ') {
+          outcome[r]++;
+        }
+      }
+    });
+    // cancelling the successes and fails.
+    var totalSuccess = outcome.s + outcome.T;
+    var totalFailure = outcome.f + outcome.D;
+    var total = totalSuccess - totalFailure;
+    outcome.s = outcome.f = 0;
+    if (total < 0) {
+      outcome.f = Math.abs(total);
+    } else {
+      outcome.s = total;
+    }
+    this.prettyOutcome(resultElement, outcome);
   },
 
   rollDie: function(dieName) {
